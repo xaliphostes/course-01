@@ -33,34 +33,53 @@ export interface Base {
 class Cst implements Base {
     constructor(public v: number) {}
     eval (v: number) { return this.v }
-    deval(v: number) { return 0.0 }
-    name (): string  { return this.v.toString() }
-    dname(): string  { return '0'}
+    deval(v: number) { return 0 }
+    name (v: string): string { return this.v.toString() }
+    dname(v: string): string { return ''}
 }
 export function cst(v: number) {return new Cst(v)}
 
+class Variable implements Base {
+    constructor() {}
+    eval (v: number) {
+        return v
+    }
+    deval(v: number) {
+        return 1
+    }
+    name (v: string): string { return v }
+    dname(v: string): string { return '1'}
+}
+export function variable() {return new Variable()}
 
-class Monome implements Base {
-    constructor(public deg: number, public f: Base) {}
-    eval(v: number): number {
+// (f^n)' = n f' f^(n-1)
+class Pow implements Base {
+    constructor(private f: Base, private deg: number) {}
+    eval (v: number) {
         return Math.pow(this.f.eval(v), this.deg)
     }
-    deval(v: number): number {
-        return this.deg*this.f.deval(v) * Math.pow(this.f.eval(v), this.deg-1)
+    deval(v: number) {
+        return this.deg * this.f.deval(v) * Math.pow(this.f.eval(v), this.deg-1)
     }
-    name(v: string): string  {
-        if (typeof this.f==="number") return v
-        return "(" + this.f.name(v) + ")^" + this.deg
+    name (v: string): string {
+        if (this.deg===0) return "1"
+        if (this.deg===1) return this.f.name(v)
+        return this.f.name(v) + '^' + this.deg
     }
     dname(v: string): string {
-        if (this.deg==1) return "0"
-        const f  = this.f.name(v)
-        const df = this.f.dname(v)
-        return (this.deg) + "(" + df + ")^" + (this.deg-1) + ".(" + f + ")^" + (this.deg-1)
+        if (this.deg===1) return this.f.dname(v)
+        if (this.deg===2) {
+            const a = this.f.dname(v)
+            if (isNumber(a)) return (2*parseFloat(a)) + this.f.name(v)
+            return '2*' + a + this.f.name(v)
+        }
+        
+        const a = this.f.dname(v)
+        if (isNumber(a)) return (this.deg*parseFloat(a)) + this.f.name(v) + (this.deg-1===1?'':"^"+(this.deg-1))
+        return (this.deg) + '*' + this.f.dname(v) + '*' + this.f.name(v) + (this.deg-1===1?'':"^"+(this.deg-1))
     }
 }
-export function monome(deg: number, a: Base) {return new Monome(deg, a)}
-
+export function pow(b: Base, deg: number) {return new Pow(b, deg)}
 
 class Add implements Base {
     constructor(private f1: Base, private f2: Base) {
@@ -72,16 +91,43 @@ class Add implements Base {
         return  this.f1.deval(v) + this.f2.deval(v)
     }
     name(v: string): string {
+        if (this.f1.name(v) === '' && this.f2.name(v) === '') return ''
+        if (this.f1.name(v) === '') return this.f2.name(v)
+        if (this.f2.name(v) === '') return this.f1.name(v)
         return this.f1.name(v) + " + " + this.f2.name(v)
     }
     dname(v: string): string {
-        const df1 = this.f1.dname(v)
-        const df2 = this.f2.dname(v)
-        return "(" + df1 + " + " + df2 + ")"
+        if (this.f1.dname(v) === '' && this.f2.dname(v) === '') return ''
+        if (this.f1.dname(v) === '') return this.f2.dname(v)
+        if (this.f2.dname(v) === '') return this.f1.dname(v)
+        return this.f1.dname(v) + " + " + this.f2.dname(v)
     }
 }
 export function add(a: Base, b: Base) {return new Add(a, b)}
 
+class Sub implements Base {
+    constructor(private f1: Base, private f2: Base) {
+    }
+    eval(v: number)  {
+        return this.f1.eval(v) - this.f2.eval(v)
+    }
+    deval(v: number) {
+        return  this.f1.deval(v) - this.f2.deval(v)
+    }
+    name(v: string): string {
+        if (this.f1.name(v) === '' && this.f2.name(v) === '') return ''
+        if (this.f1.name(v) === '') return '-'+this.f2.name(v)
+        if (this.f2.name(v) === '') return this.f1.name(v)
+        return this.f1.name(v) + " - " + this.f2.name(v)
+    }
+    dname(v: string): string {
+        if (this.f1.dname(v) === '' && this.f2.dname(v) === '') return ''
+        if (this.f1.dname(v) === '') return '-'+this.f2.dname(v)
+        if (this.f2.dname(v) === '') return this.f1.dname(v)
+        return this.f1.dname(v) + " - " + this.f2.dname(v)
+    }
+}
+export function sub(a: Base, b: Base) {return new Sub(a, b)}
 
 class Prod implements Base {
     constructor(private f1: Base, private f2: Base) {
@@ -94,18 +140,22 @@ class Prod implements Base {
                 this.f1.deval(v) * this.f2.eval(v)
     }
     name(v: string): string {
-        return this.f1.name(v) + "." + this.f2.name(v)
+        const s1 = this.f1.name(v)
+        const s2 = this.f2.name(v)
+        const f1 = parseFloat(s1)
+        const f2 = parseFloat(s2)
+        if (isNumber(s1) && isNumber(s2)) return (f1*f2).toString()
+        return toParenthesis(this.f1.name(v)) + " * " + toParenthesis(this.f2.name(v))
     }
-    dname(v: string): string {
-        const f1  = this.f1.name(v)
-        const f2  = this.f2.name(v)
-        const df1 = this.f1.dname(v)
-        const df2 = this.f2.dname(v)
-        return "(" + df1 + "." + f2 + " + " + f1 + "." + df2 + ")"
+    dname(s: string): string {
+        const u  = this.f1.name(s)
+        const v  = this.f2.name(s)
+        const up = this.f1.dname(s)
+        const vp = this.f2.dname(s)
+        return toParenthesis( toParenthesis(up) + ' * ' + toParenthesis(v) + ' + ' + toParenthesis(u) + ' * ' + toParenthesis(vp) )
     }
 }
 export function prod(a: Base, b: Base) {return new Prod(a, b)}
-
 
 class Div implements Base {
     constructor(private f1: Base, private f2: Base) {
@@ -121,14 +171,14 @@ class Div implements Base {
         return (df1*f2-f1*df2)/(f2*f2)
     }
     name(v: string): string {
-        return '(' + this.f1.name(v) + ")/(" + this.f2.name(v) + ')'
+        return toParenthesis(this.f1.name(v)) + " / " + toParenthesis(this.f2.name(v))
     }
     dname(v: string): string {
-        const f1  = this.f1.name(v)
-        const f2  = this.f2.name(v)
-        const df1 = this.f1.dname(v)
-        const df2 = this.f2.dname(v)
-        return "(" + df1 + "." + f2 + " - " + f1 + "." + df2 + ")/" + f2 + "^2"
+        const f1  = toParenthesis(this.f1.name(v))
+        const f2  = toParenthesis(this.f2.name(v))
+        const df1 = toParenthesis(this.f1.dname(v))
+        const df2 = toParenthesis(this.f2.dname(v))
+        return "(" + df1 + " * " + f2 + " - " + f1 + " * " + df2 + ")/" + f2 + "^2"
     }
 }
 export function div(a: Base, b: Base) {return new Div(a, b)}
@@ -152,14 +202,34 @@ class Cos implements Base {
 export function cos() {return new Cos()}
 
 
-class Tan extends Div {
-    constructor() {
-        super(new Sin(), new Cos())
-    }
+// ANOTHER WAY
+// -----------
+// class Tan extends Div {
+//     constructor() {
+//         super(new Sin(), new Cos())
+//     }
+// }
+//
+class Tan implements Base {
+    eval (v: number): number {return Math.tan(v) }
+    deval(v: number): number {return 1/Math.cos(v)**2 }
+    name (v: string): string {return "tan(" + v + ")" }
+    dname(v: string): string {return "1/cos(" + v + ")^2" }
 }
 export function tan() {return new Tan()}
+
+// Helpers...
+// -----------------------------
+
+function isNumber(s: string): boolean {
+    return ! Number.isNaN(parseFloat(s))
+}
+
+function toParenthesis(a: string): string {
+    return '(' + a + ')'
+}
   
 // -----------------------------------------------------------------
 // TODO
-// f-g
 // f°g
+

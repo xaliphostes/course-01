@@ -1,28 +1,36 @@
-const { prod, sin, cos, div, monome, add, cst } = require('../../dist/@youwol/course-01')
+const { sub, prod, div, pow, sin, tan, add, variable } = require('../../dist/@youwol/course-01')
 
-// -----------------------------
-//
-// f = sin(x) * cos(x) + 3
-//
-// -----------------------------
-const f = add( prod(sin(), cos()), cst(3) )
+{
+    const f =
+        prod(
+            add(
+                add(
+                    pow(variable(), 6),
+                    pow(variable(), 3)
+                ),
+                pow(variable(), 1)
+            ),
+            sub(sin(), variable())
+        )
 
-console.log("f(x)    = " + f.name("x"))
-console.log("f(0.1)  = " + f.eval(0.1))
+    console.log("f     = " + f.name('x') )
+    console.log("f'    = " + f.dname('x') )
+    console.log("f(1)  = " + f.eval(1) )
+    console.log("f'(1) = " + f.deval(1) )
+}
+console.log('')
+{
+    const f =
+        div(
+            add(
+                pow(variable(), 6),
+                sin()
+            ),
+            add(tan(), variable())
+        )
 
-console.log("")
-
-console.log("f'(x)   = " + f.dname("x"))
-console.log("f'(0.1) = " + f.deval(0.1))
-
-console.log("")
-
-// -----------------------------
-//        sin(x)^3
-// g = ---------------
-//     sin(x) * cos(x)
-// -----------------------------
-const g = div(monome(3, sin()), f)
-
-console.log("g (x)   = " + g.name("x"))
-console.log("g'(x)   = " + g.dname("x"))
+    console.log("f     = " + f.name('x') )
+    console.log("f'    = " + f.dname('x') )
+    console.log("f(1)  = " + f.eval(1) )
+    console.log("f'(1) = " + f.deval(1) )
+}

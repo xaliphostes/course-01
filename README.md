@@ -2,6 +2,16 @@
 
 Un melange de fonctions et d'objets TypeScript pour tester et se familiariser avec ces langages.
 
+___
+
+## Usage
+- `yarn` to install all the necessary packages before anything
+- `yarn build` to build the lib
+- `yarn test` too test the lib
+- Go to the directory `examples`to run some examples
+
+___
+
 ## Notions préliminaires
 - Comprendre et utiliser l'utilitaire `yarn`
 - Comprendre et utiliser l'utilitaire `node`
@@ -33,32 +43,3 @@ Un melange de fonctions et d'objets TypeScript pour tester et se familiariser av
 - Le `constructor` et son rôle
 - Notion sous-jacente de polymorphisme
 - → Exemple 2: Comment; en une centaine de lignes de code, on peut faire de la dérivation numérique et symbolique de fonctions mathématiques à une variable
-
-
-## Programmation fonctionnelle
-Exemple du *pourquoi ce truc* ...
-```js
-let n = 2
-
-// incrémentation par effet de bord
-function inc(k) {
-    n = n + k // mutation de n !!!
-    return n
-}
-
-console.log( inc(1) + inc(1) )
-```
-La valeure attendue est `4`.<br>
-La valeure retrounée est `7`.
-
-```js
-// incrémentation sans effet de bord 
-// (pas de variable globale, pas de mutation)
-function inc(k) {
-    return k+1 // pas de mutation !!!
-}
-
-console.log( inc(1) + inc(1) )
-```
-La valeure attendue est `4`.<br>
-La valeure retrounée est `4`.
