@@ -25,7 +25,8 @@ module.exports = {
         ]
     },
     externals: [{
-        '@youwol/dataframe': "@youwol/dataframe"
+        '@youwol/dataframe': "@youwol/dataframe",
+        '@youwol/math': "@youwol/math"
     }],
     module: {
         rules: [
