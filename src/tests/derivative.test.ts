@@ -1,55 +1,52 @@
-import { add, tan, div, pow, prod, sin, variable } from "../lib"
+import { add, tan, div, pow, prod, sin, variable, comp, exp, cst, Base, Div } from "../lib"
 
-test('test derivative 1', () => {
-    function F(x: number) {
-        return x**6 + x**3 + x + Math.sin(x)
-    }
+function display(f: Base, x: number = 3) {
+    console.log(f.name('x'))
+    console.log(f.derive().name('x'))
+    console.log(f.eval(x))
+    console.log(f.derive().eval(x))
+}
 
-    function Fp(x: number) {
-        return 6*x**5 + 3*x**2 + 1 + Math.cos(x)
-    }
+test('test derivative add', () => {
+    const f = add(variable(), variable())
 
-    const f =
-    add(
-        add(
-            add(
-                pow(variable(), 6),
-                pow(variable(), 3)
-            ),
-            pow(variable(), 1)
-        ),
-        sin()
-    )
+    expect(f.eval(3)).toEqual(6)
+    expect(f.derive().eval(3)).toEqual(2)
 
-    console.log("f  = " + f.name('x') )
-    console.log("f' = " + f.dname('x') )
-
-    expect( f.name('x') ).toEqual('x^6 + x^3 + x + sin(x)')
-    expect( f.eval(2) ).toBeCloseTo(F(2))
-    expect( f.dname('x') ).toEqual('6x^5 + 3x^2 + 1 + cos(x)')
-    expect( f.deval(2) ).toBeCloseTo(Fp(2))
+    expect(f.name('x')).toEqual('x+x')
+    expect(f.derive().name('x')).toEqual('1+1')
 })
 
-test('test derivative 2', () => {
-    function F(x: number) {
-        return (x**6+Math.sin(x))/(Math.tan(x)+x)
-    }
+test('test derivative comp', () => {
+    const f = comp(pow(variable(), 3), exp())
 
-    function Fp(x: number) {
-        return ((6*x**5 + Math.cos(x)) * (Math.tan(x) + x) - (x**6 + Math.sin(x))*(1/Math.cos(x)**2 + 1))/(Math.tan(x) + x)**2
-    }
-    const f =
-        div(
-            add(
-                pow(variable(), 6),
-                sin()
-            ),
-            add(tan(), variable())
-        )
+    expect(f.eval(3)).toBeCloseTo(8103.08)
+    expect(f.derive().eval(3)).toBeCloseTo(24309.25)
 
-    console.log("f  = " + f.name('x') )
-    console.log("f' = " + f.dname('x') )
-
-    expect( f.eval(0.5) ).toBeCloseTo(F(0.5))
-    expect( f.deval(0.5) ).toBeCloseTo(Fp(0.5))
+    expect(f.name('x')).toEqual('(e^(x))^3')
+    expect(f.derive().name('x')).toEqual('3*1*(e^(x))^2*e^(x)')
 })
+
+test('test derivative constant', () => {
+    const f = cst(10)
+
+    expect(f.eval(3)).toBeCloseTo(10)
+    expect(f.derive().eval(3)).toBeCloseTo(0)
+
+    expect(f.name('x')).toEqual('10')
+    expect(f.derive().name('x')).toEqual('0')
+})
+
+test('test derivative div', () => {
+    const f = div(sin(), variable())
+    
+    // display(f)
+
+    expect(f.eval(3)).toBeCloseTo(0.047)
+    expect(f.derive().eval(3)).toBeCloseTo(-0.3457)
+
+    expect(f.name('x')).toEqual('(sin(x))/(x)')
+    expect(f.derive().name('x')).toEqual('(cos(x)*x-sin(x)*1)/((x)^2)')
+})
+
+// Etc...

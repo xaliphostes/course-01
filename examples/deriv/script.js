@@ -1,36 +1,34 @@
-const { sub, prod, div, pow, sin, tan, add, variable } = require('../../dist/@youwol/course-01')
+const { div, pow, sin, cos, comp, exp, add, variable } = require('../../dist/@youwol/course-01')
 
-{
-    const f =
-        prod(
-            add(
-                add(
-                    pow(variable(), 6),
-                    pow(variable(), 3)
-                ),
-                pow(variable(), 1)
-            ),
-            sub(sin(), variable())
+const x = 0.2
+
+//      sin(x)^2 + cos(x)
+// f = -------------------
+//           sin(x^3)
+
+let Fct = 
+    div(
+        add(
+            pow(sin(), 2),
+            cos()
+        ),
+		comp(
+            sin(),
+            pow(variable(), 3)
         )
+	)
 
-    console.log("f     = " + f.name('x') )
-    console.log("f'    = " + f.dname('x') )
-    console.log("f(1)  = " + f.eval(1) )
-    console.log("f'(1) = " + f.deval(1) )
-}
-console.log('')
-{
-    const f =
-        div(
-            add(
-                pow(variable(), 6),
-                sin()
-            ),
-            add(tan(), variable())
-        )
+for (var i=0; i<3; ++i) {
+    console.log(" ("+i+")")
+    console.log("f   (x)    = "+Fct.name("x"))
+    console.log(" ")
+    console.log(" ("+i+")")
 
-    console.log("f     = " + f.name('x') )
-    console.log("f'    = " + f.dname('x') )
-    console.log("f(1)  = " + f.eval(1) )
-    console.log("f'(1) = " + f.deval(1) )
+    const v = Fct.eval(x)
+    
+    console.log("f   ("+x+") = " + v)
+    console.log(" ")
+    console.log(" ")
+    Fct = Fct.derive()
+    console.log('------------------------------------')
 }
