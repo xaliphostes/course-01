@@ -9,6 +9,7 @@ ___
 - `yarn build` to build the lib
 - `yarn test` too test the lib
 - Go to the directory `examples`to run some examples
+    - `node script.js`
 
 ___
 

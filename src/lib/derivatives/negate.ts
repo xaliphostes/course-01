@@ -7,7 +7,7 @@ export class Negate implements Base {
     eval(v: number): number { 
         return -this.f.eval(v) 
     }
-    name(v: string): string { return "-" + this.f.name(v) }
+    name(v: string): string { return "(-" + this.f.name(v) + ')' }
     derive(): Base { return negate(this.f.derive()) }
     isNull(): boolean { return this.f.isNull() }
     isCst(): boolean { return this.f.isCst() }

@@ -49,4 +49,19 @@ test('test derivative div', () => {
     expect(f.derive().name('x')).toEqual('(cos(x)*x-sin(x)*1)/((x)^2)')
 })
 
+test('test bug', () => {
+    //
+    // Something wrong here if we uncomment the code in prod.ts
+    //
+    const f = prod(
+        prod(
+            cst(2),
+            cst(1)
+        ),
+        variable()
+    )
+    console.log(f.name('x'))
+    console.log(f.derive().name('x'))
+})
+
 // Etc...
