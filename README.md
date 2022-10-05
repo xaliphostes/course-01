@@ -1,6 +1,20 @@
 # course-01
 
-Un melange de fonctions et d'objets TypeScript pour tester et se familiariser avec ces langages.
+Premier cours sur les langages TypeScript et JavaScript.
+
+## Pourquoi TypeScript / Javascript ?
+Parce que le **JavaScript** est le langage des navigateurs internet et que ceux-ci sont extrémement optimisés pour faire tourner ce type langage interprété.
+
+**TypeScript** est un langage de programmation libre et open source développé par Microsoft qui a pour but d'améliorer et de sécuriser la production de code JavaScript. Il s'agit d'un sur-ensemble syntaxique strict de JavaScript (c'est-à-dire que tout code JavaScript correct peut être utilisé avec TypeScript). Le code TypeScript est transcompilé en JavaScript, et peut ainsi être interprété par n'importe quel navigateur web ou moteur JavaScript. 
+
+Ces langages ont une structure syntaxique (boucles, tests...) proche du langage C.
+___
+
+## Installation pour les développeurs
+- [Visual studio code](https://code.visualstudio.com/): éditeur de code (js, c++, fortran, matlab...)
+- [nodejs](https://nodejs.org/en/): pour faire tourner du JavaScript dans une console
+- [yarn](https://yarnpkg.com/): cette commande va remplacer la commande "npm" de nodejs (plus pratique)
+- [git](https://git-scm.com/): Git is free and open source software for distributed version control: tracking changes in any set of files, usually used for coordinating work among programmers collaboratively developing source code during software development.
 
 ___
 
@@ -8,10 +22,11 @@ ___
 - `yarn` to install all the necessary packages before anything
 - `yarn build` to build the lib
 - `yarn test` too test the lib
-- Go to the directory `examples`to run some examples
+- Go to the directory `examples` to run some examples
     - `node script.js`
 
 ___
+<br><br><br>
 
 ## Notions préliminaires
 - Comprendre et utiliser l'utilitaire `yarn`
