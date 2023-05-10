@@ -4,7 +4,6 @@
     "description": "First course on TypeScript",
     "author": "",
     "keywords": [],
-    "main": "dist/@youwol/course-01.js",
     "types": "src/index.ts",
     "scripts": {
         "build": "yarn build:dev",
@@ -13,7 +12,8 @@
         "test": "jest -c ./jest.config.js --rootDir .",
         "test-coverage": "jest -c ./jest.config.js --rootDir . --collect-coverage --collectCoverageFrom=./src/lib/**/*.ts ",
         "doc": "typedoc src/ src/examples --exclude src/tests --media ./media --excludePrivate --disableSources --out dist/docs --includeVersion --hideGenerator",
-        "publish-npm-public": "yarn build:prod && yarn test-coverage && yarn publish --access public"
+        "publish-npm-public": "yarn build:prod && yarn test-coverage && yarn publish --access public",
+        "serve": "http-server . -p 88 -o index.html"
     },
     "dependencies": {
         "@youwol/dataframe": "^0.0.34",

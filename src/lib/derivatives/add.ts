@@ -7,8 +7,19 @@ class Add implements Base {
     eval(v: number): number {
         return this.f1.eval(v) + this.f2.eval(v) 
     }
-    name(v: string): string { 
-        return this.f1.name(v) + "+" + this.f2.name(v) 
+    name(v: string): string {
+        const s1 = this.f1.name(v)
+        const s2 = this.f2.name(v)
+        if (s1 === '') {
+            if (s2 === '') {
+                return ''
+            }
+            return s2
+        }
+        if (s2 === '') {
+            return s1
+        }
+        return s1 + "+" + s2
     }
     derive(): Base {
         var a = this.f1.derive()

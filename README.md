@@ -2,6 +2,11 @@
 
 Premier cours sur les langages TypeScript et JavaScript.
 
+## Running the example
+[Launch](https://xaliphostes.github.io/course-01/)
+
+<br><br><br>
+
 ## Pourquoi TypeScript / Javascript ?
 Parce que le **JavaScript** est le langage des navigateurs internet et que ceux-ci sont extrémement optimisés pour faire tourner ce type langage interprété.
 

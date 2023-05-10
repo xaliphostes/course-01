@@ -1,0 +1,163 @@
+<html>
+
+<head>
+    <link href='http://fonts.googleapis.com/css?family=Oswald:400,300,700' rel='stylesheet' type='text/css'>
+    <script src="dist/@youwol/course-01.js"></script>
+    <style>
+        body {
+            font-family: 'Oswald', sans-serif !important;
+        }
+
+        textarea {
+            margin: 0;
+            width: 100%;
+            height: 50%;
+            border: 1;
+            font-family: 'Fira Code', monospace;
+            font-size: 12pt;
+            line-height: 1.2;
+            padding: 1em;
+        }
+
+        button {
+            margin: 0;
+            padding: 1em;
+        }
+
+        select {
+            margin: 0;
+            padding: 1em;
+        }
+
+        #script {
+            background: rgb(222, 222, 222);
+        }
+
+        #console {
+            background: rgb(0, 0, 0);
+            color: bisque;
+        }
+    </style>
+</head>
+
+<body>
+    <h3>Possible values</h3><h4>div, prod,
+        add, sub,
+        pow,
+        sin, cos, tan,
+        comp,
+        exp,
+        negate,
+        variable,
+        cst</h4>
+    <textarea id="script" accesskey=h placeholder=JavaScript autocapitalize=off autocorrect=off></textarea>
+
+    <br><br>
+    <label for="derivs">Derivative:</label>
+    <select name="deriv" id="deriv" onchange="">
+        <option value="0">None</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+    </select>
+    <label for="at"> at </label>
+    <input type="number" id="at" id="" cols="10" rows="1" value="0.2"></input>
+    <button onclick="changeDeriv()">Compute</button>
+    
+    <br><br>
+
+    <textarea id="console" accesskey=h  autocapitalize=off autocorrect=off></textarea>
+
+    <div>
+        <a href="">Source</a>
+    </div>
+
+    <script>
+        // Redirect the console.log message in the html page
+        (function () {
+            if (!console) {
+                console = {}
+            }
+            const old = console.log
+            const logger = document.getElementById('console')
+            logger.readOnly = 'true'
+            console.log = function (message) {
+                logger.value += message + '\n'
+            }
+        })()
+    </script>
+
+    <script>
+        const lib = window['@youwol/course-01']
+        const {
+            div, prod,
+            add, sub,
+            pow,
+            sin, cos, tan,
+            comp,
+            exp,
+            negate,
+            variable,
+            cst
+        } = lib
+
+        function changeDeriv() {
+            let Fct = eval(script.value)
+            // div(
+            //     add(
+            //         pow(sin(), 2),
+            //         cos()
+            //     ),
+            //     comp(
+            //         sin(),
+            //         pow(variable(), 3)
+            //     )
+            // )
+
+            const at = document.getElementById('at')
+            const x = at.value
+
+            const logger = document.getElementById('console')
+            logger.value = ''
+            logger.readOnly = 'true'
+            const deriv = document.getElementById("deriv").value
+            for (var i = 0; i < deriv; ++i) {
+                Fct = Fct.derive()
+            }
+
+            console.log(" (" + i + ")")
+            console.log("f   (x)    = " + Fct.name("x"))
+            console.log(" ")
+            console.log(" (" + i + ")")
+
+            const v = Fct.eval(x)
+
+            console.log("f   (" + x + ") = " + v)
+        }
+
+        const script = document.getElementById('script')
+        script.style.height = '30%'
+
+        //      sin(x)^2 + cos(x)
+        // f = -------------------
+        //           sin(x^3)
+
+        script.value = `div(
+    add(
+        pow(sin(), 2),
+        cos()
+    ),
+    comp(
+        sin(),
+        pow(variable(), 3)
+    )
+)`
+    </script>
+
+</body>
+
+</html>

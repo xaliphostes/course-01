@@ -4,7 +4,7 @@ coverage/
 junit.xml
 src/auto_generated.ts
 
-dist/
+# dist/
 
 cdn.zip
 **/.DS_Store

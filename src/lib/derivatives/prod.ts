@@ -12,7 +12,19 @@ class Prod implements Base {
         return this.f1.eval(v) * this.f2.eval(v)
     }
     name(v: string): string { 
-        return this.f1.name(v) + "*" + this.f2.name(v) 
+        if (this.f1.isNull() || this.f2.isNull()) return ""
+        const s1 = this.f1.name(v)
+        const s2 = this.f2.name(v)
+        if (s1 === '1') {
+            if (s2 === '1') {
+                return "1"
+            }
+            return s2
+        }
+        if (s2 === '1') {
+            return s1
+        }
+        return s1 + "*" + s2
     }
     derive(): Base {
         const a = this.f1.derive()

@@ -18,7 +18,7 @@ let Fct =
         )
 	)
 
-for (var i=0; i<5; ++i) {
+for (var i=0; i<4; ++i) {
     console.log(" ("+i+")")
     console.log("f   (x)    = "+Fct.name("x"))
     console.log(" ")
